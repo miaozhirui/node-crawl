@@ -1,3 +1,10 @@
+/**
+ * 1. 有分页
+ * 2. 可以查询
+ * 3. 点击分类可以切换文章
+ * 4. 点击文章还可以跳到百度贴吧对应的贴吧
+ */
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -44,3 +51,50 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+
+/**
+ * 写一个计划任务，在子进程里面执行一个脚本
+ * 起一个子进程
+ */
+
+var spawn = require('child_process').spawn;
+var CronJob = require('cron').CronJob;
+
+//每隔30秒执行一个任务，执行一个脚本，让它再子进程里面执行，不影响主进程的执行
+var job = new CronJob('*/30 * * * * *', function () {
+    console.log('开始输出了');
+    //创建一个子进程
+    var child = spawn('node', ['./task/main.js']);
+
+    //把子进程的标准输出输入到主进程的标准输出
+    child.stdout.pipe(process.stdout);
+
+    //把子进程的错误输出输入到主进程的错误输出
+    child.stderr.pipe(process.stderr);
+})
+
+job.start();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
